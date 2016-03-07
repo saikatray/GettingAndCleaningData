@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Program</title>
+
+<script type="text/javascript">
+window.onload = function() {
+  var imgs = document.getElementsByTagName('img'), i, img;
+  for (i = 0; i < imgs.length; i++) {
+    img = imgs[i];
+    // center an image if it is the only element of its parent
+    if (img.parentElement.childElementCount === 1)
+      img.parentElement.style.textAlign = 'center';
+  }
+};
+</script>
+
+
+
+<!-- MathJax scripts -->
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 13px;
+}
+
+body {
+  max-width: 800px;
+  margin: auto;
+  padding: 1em;
+  line-height: 20px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 {
+   font-size:2.2em;
+}
+
+h2 {
+   font-size:1.8em;
+}
+
+h3 {
+   font-size:1.4em;
+}
+
+h4 {
+   font-size:1.0em;
+}
+
+h5 {
+   font-size:0.9em;
+}
+
+h6 {
+   font-size:0.8em;
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre, img {
+  max-width: 100%;
+}
+pre {
+  overflow-x: auto;
+}
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code {
+  font-size: 92%;
+  border: 1px solid #ccc;
+}
+
+code[class] {
+  background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * {
+      background: transparent !important;
+      color: black !important;
+      filter:none !important;
+      -ms-filter: none !important;
+   }
+
+   body {
+      font-size:12pt;
+      max-width:100%;
+   }
+
+   a, a:visited {
+      text-decoration: underline;
+   }
+
+   hr {
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote {
+      padding-right: 1em;
+      page-break-inside: avoid;
+   }
+
+   tr, img {
+      page-break-inside: avoid;
+   }
+
+   img {
+      max-width: 100% !important;
+   }
+
+   @page :left {
+      margin: 15mm 20mm 15mm 10mm;
+   }
+
+   @page :right {
+      margin: 15mm 10mm 15mm 20mm;
+   }
+
+   p, h2, h3 {
+      orphans: 3; widows: 3;
+   }
+
+   h2, h3 {
+      page-break-after: avoid;
+   }
+}
+</style>
+
+
+
+</head>
+
+<body>
+<h1>Program</h1>
+
+<p># It is considered the required files are downloaded and extracted under the folder 
+ # named &ldquo;UCI HAR Dataset&rdquo; in the working directory</p>
+
+<p>##################################################################### </p>
+
+<h1>setting project path</h1>
+
+<p>uciDataSetPath &lt;- file.path(getwd(), &ldquo;UCI HAR Dataset&rdquo;)</p>
+
+<p>##################################################################### 
+#Reading - files.
+subjectTraining &lt;- fread(file.path(uciDataSetPath, &ldquo;train&rdquo;, &ldquo;subject_train.txt&rdquo;))
+subjectTesting &lt;- fread(file.path(uciDataSetPath, &ldquo;test&rdquo;, &ldquo;subject_test.txt&rdquo;))</p>
+
+<p>dataTraining &lt;- data.table(read.table(file.path(uciDataSetPath, &ldquo;train&rdquo;, &ldquo;X_train.txt&rdquo;)))
+dataTesting &lt;- data.table(read.table(file.path(uciDataSetPath, &ldquo;test&rdquo;, &ldquo;X_test.txt&rdquo;)))</p>
+
+<p>dataActivityTraining &lt;- fread(file.path(uciDataSetPath, &ldquo;train&rdquo;, &ldquo;Y_train.txt&rdquo;))
+dataActivityTesting &lt;- fread(file.path(uciDataSetPath, &ldquo;test&rdquo;, &ldquo;Y_test.txt&rdquo;))</p>
+
+<p>##################################################################### </p>
+
+<h1>Merges the training and the test sets to create one data set.</h1>
+
+<h1>Concatenate the data tables.</h1>
+
+<h1>Merge columns.</h1>
+
+<h1>Set key.</h1>
+
+<p>dataSubject &lt;- rbind(subjectTraining, subjectTesting)
+setnames(dataSubject, &ldquo;V1&rdquo;, &ldquo;subject&rdquo;)
+dataActivity &lt;- rbind(dataActivityTraining, dataActivityTesting)
+setnames(dataActivity, &ldquo;V1&rdquo;, &ldquo;activityNum&rdquo;)
+dt &lt;- rbind(dataTraining, dataTesting)
+dataSubject &lt;- cbind(dataSubject, dataActivity)
+dt &lt;- cbind(dataSubject, dt)</p>
+
+<p>setkey(dt, subject, activityNum)</p>
+
+<p>#####################################################################</p>
+
+<h1>Extracts only the measurements on the mean and standard deviation for each measurement.</h1>
+
+<h1>Seperating variables in dt are measurements for the mean and standard deviation</h1>
+
+<h1>Subset only measurements for the mean and standard deviation.</h1>
+
+<h1>Convert the column numbers to a vector of variable names matching columns in dt</h1>
+
+<p>dtFeatures &lt;- fread(file.path(uciDataSetPath, &ldquo;features.txt&rdquo;))
+setnames(dtFeatures, names(dtFeatures), c(&ldquo;featureNum&rdquo;, &ldquo;featureName&rdquo;))
+dtFeatures &lt;- dtFeatures[grepl(&ldquo;mean\(\)|std\(\)&rdquo;, featureName)]
+dtFeatures$featureCode &lt;- dtFeatures[, paste0(&ldquo;V&rdquo;, featureNum)]
+head(dtFeatures)
+dtFeatures$featureCode</p>
+
+<h1>Subset these variables using variable names</h1>
+
+<p>select &lt;- c(key(dt), dtFeatures$featureCode)
+dt &lt;- dt[, select, with = FALSE]</p>
+
+<p>#####################################################################
+#Uses descriptive activity names to name the activities in the data set
+#Reading activity_labels.txt file - later - used to add descriptive names to the activities.
+dtActivityNames &lt;- fread(file.path(uciDataSetPath, &ldquo;activity_labels.txt&rdquo;))
+setnames(dtActivityNames, names(dtActivityNames), c(&ldquo;activityNum&rdquo;, &ldquo;activityName&rdquo;))</p>
+
+<p>#####################################################################
+#Appropriately labels the data set with descriptive variable names.</p>
+
+<h1>Merge activity labels.</h1>
+
+<h1>Add activityName as a key.</h1>
+
+<h1>Melt the data table to reshape it from a short and wide format to a tall and narrow format.</h1>
+
+<h1>Merge activity name.</h1>
+
+<p>dt &lt;- merge(dt, dtActivityNames, by = &ldquo;activityNum&rdquo;, all.x = TRUE)
+setkey(dt, subject, activityNum, activityName)
+dt &lt;- data.table(melt(dt, key(dt), variable.name = &ldquo;featureCode&rdquo;))
+dt &lt;- merge(dt, dtFeatures[, list(featureNum, featureCode, featureName)], by = &ldquo;featureCode&rdquo;, all.x = TRUE)</p>
+
+<h1>Creating factor class</h1>
+
+<p>dt$activity &lt;- factor(dt$activityName)
+dt$feature &lt;- factor(dt$featureName)</p>
+
+<p>#Seperate features from featureName
+grepthis &lt;- function(regex) {
+    grepl(regex, dt$feature)
+}</p>
+
+<h2>Features with 2 categories</h2>
+
+<p>n &lt;- 2
+y &lt;- matrix(seq(1, n), nrow = n)
+x &lt;- matrix(c(grepthis(&ldquo;<sup>t&rdquo;),</sup> grepthis(&ldquo;<sup>f&rdquo;)),</sup> ncol = nrow(y))
+dt$featDomain &lt;- factor(x %<em>% y, labels = c(&ldquo;Time&rdquo;, &ldquo;Freq&rdquo;))
+x &lt;- matrix(c(grepthis(&ldquo;Acc&rdquo;), grepthis(&ldquo;Gyro&rdquo;)), ncol = nrow(y))
+dt$featInstrument &lt;- factor(x %</em>% y, labels = c(&ldquo;Accelerometer&rdquo;, &ldquo;Gyroscope&rdquo;))
+x &lt;- matrix(c(grepthis(&ldquo;BodyAcc&rdquo;), grepthis(&ldquo;GravityAcc&rdquo;)), ncol = nrow(y))
+dt$featAcceleration &lt;- factor(x %<em>% y, labels = c(NA, &ldquo;Body&rdquo;, &ldquo;Gravity&rdquo;))
+x &lt;- matrix(c(grepthis(&ldquo;mean()&rdquo;), grepthis(&ldquo;std()&rdquo;)), ncol = nrow(y))
+dt$featVariable &lt;- factor(x %</em>% y, labels = c(&ldquo;Mean&rdquo;, &ldquo;SD&rdquo;))</p>
+
+<h2>Features with 1 category</h2>
+
+<p>dt$featJerk &lt;- factor(grepthis(&ldquo;Jerk&rdquo;), labels = c(NA, &ldquo;Jerk&rdquo;))
+dt$featMagnitude &lt;- factor(grepthis(&ldquo;Mag&rdquo;), labels = c(NA, &ldquo;Magnitude&rdquo;))</p>
+
+<h2>Features with 3 categories</h2>
+
+<p>n &lt;- 3
+y &lt;- matrix(seq(1, n), nrow = n)
+x &lt;- matrix(c(grepthis(&ldquo;-X&rdquo;), grepthis(&ldquo;-Y&rdquo;), grepthis(&ldquo;-Z&rdquo;)), ncol = nrow(y))
+dt$featAxis &lt;- factor(x %*% y, labels = c(NA, &ldquo;X&rdquo;, &ldquo;Y&rdquo;, &ldquo;Z&rdquo;))</p>
+
+<h1>Possible combinations feature Vs factor class variables</h1>
+
+<p>r1 &lt;- nrow(dt[, .N, by = c(&ldquo;feature&rdquo;)])
+r2 &lt;- nrow(dt[, .N, by = c(&ldquo;featDomain&rdquo;, &ldquo;featAcceleration&rdquo;, &ldquo;featInstrument&rdquo;, 
+    &ldquo;featJerk&rdquo;, &ldquo;featMagnitude&rdquo;, &ldquo;featVariable&rdquo;, &ldquo;featAxis&rdquo;)])
+r1 == r2</p>
+
+<p>#####################################################################</p>
+
+<h1>From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.</h1>
+
+<p>setkey(dt, subject, activity, featDomain, featAcceleration, featInstrument, featJerk, featMagnitude, featVariable, featAxis)
+dtTidy &lt;- dt[, list(count = .N, average = mean(value)), by = key(dt)]
+write.table(dtTidy, &ldquo;tidy.txt&rdquo;)</p>
+
+<h1>Creating codebook</h1>
+
+<p>knit(&ldquo;run_analysis.r&rdquo;, output = &ldquo;run_analysis.md&rdquo;, encoding = &ldquo;ISO8859-1&rdquo;, quiet = TRUE)
+markdownToHTML(&ldquo;run_analysis.md&rdquo;, &ldquo;run_analysis.html&rdquo;)</p>
+
+</body>
+
+</html>
